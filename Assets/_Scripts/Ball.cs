@@ -9,9 +9,11 @@ public class Ball : MonoBehaviour
     [field: SerializeField] public byte damage { get; private set; } = 1;
 
     Rigidbody rb;
+    static byte ballAmount = 0;
 
     private void Awake()
     {
+        ++ballAmount;
         rb = GetComponent<Rigidbody>();
         InAwake();
     }
@@ -43,6 +45,8 @@ public class Ball : MonoBehaviour
 
     public void ZoneInteract()
     {
+        --ballAmount;
 
+        if(ballAmount == 0) EventsManager.ChangeGameState(GameState.Lose);
     }
 }

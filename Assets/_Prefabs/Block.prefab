@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <blockType>k__BackingField: 0
+  <visualRenderer>k__BackingField: {fileID: 7920261254924772457}
 --- !u!54 &7920261253877212106
 Rigidbody:
   m_ObjectHideFlags: 0

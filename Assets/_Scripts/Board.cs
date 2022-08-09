@@ -16,6 +16,7 @@ public class Board : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         EventsManager.OnPowerupPickup += PowerupPickup;
+        CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
     }
 
     private void OnDestroy()
@@ -25,7 +26,7 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
+        float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0)
         {
             rb.AddForce(horizontal * speed * Vector3.right);

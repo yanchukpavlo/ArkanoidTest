@@ -10,33 +10,30 @@ public enum BlockType
 public class Block : MonoBehaviour
 {
     [field: SerializeField] public BlockType blockType { get; private set; }
+    [field: SerializeField] public Renderer visualRenderer { get; private set; }
 
     byte maxHp;
     byte hp;
 
-    private void Awake()
-    {
-        Setup(blockType);
-    }
-
-    public void Setup(BlockType blockType)
+    public void Setup(BlockType blockType, Color color)
     {
         switch (blockType)
         {
             case BlockType.Normal:
                 maxHp = 1;
                 hp = maxHp;
+                visualRenderer.material.color = color;
                 break;
 
             case BlockType.Shielded:
                 maxHp = 2;
                 hp = maxHp;
-                GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+                visualRenderer.material.color = Color.red;
                 break;
 
             default:
                 Debug.LogWarningFormat("Default state. Block setup  like - {0}", BlockType.Normal);
-                Setup(BlockType.Normal);
+                Setup(BlockType.Normal, Color.black);
                 break;
         }
     }
