@@ -16,12 +16,13 @@ public class Board : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         EventsManager.OnPowerupPickup += PowerupPickup;
-        CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+        EventsManager.OnGameStateChange += GameStateChanged;
     }
 
     private void OnDestroy()
     {
         EventsManager.OnPowerupPickup -= PowerupPickup;
+        EventsManager.OnGameStateChange -= GameStateChanged;
     }
 
     private void Update()
@@ -39,6 +40,26 @@ public class Board : MonoBehaviour
         {
             Vector2 direction = ball.transform.position - transform.position;
             ball.SetMoveDirection(direction);
+        }
+    }
+
+    void GameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Start:
+                CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                break;
+
+            case GameState.BallLose:
+                if (GameManager.HP > 0) CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                break;
+
+                // case GameState.Pause:
+                //     break;
+
+                // case GameState.Restore:
+                //     break;
         }
     }
 

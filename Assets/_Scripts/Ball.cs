@@ -2,51 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Ball : MonoBehaviour
+public class Ball : Projectile
 {
-    [field: SerializeField] public float speed { get; private set; } = 10f;
-    [field: SerializeField] public byte damage { get; private set; } = 1;
-
-    Rigidbody rb;
     static byte ballAmount = 0;
 
-    private void Awake()
+    private void Start()
     {
         ++ballAmount;
-        rb = GetComponent<Rigidbody>();
-        InAwake();
+        SetMoveDirection(new Vector2(Random.Range(-0.5f, 0.5f), 1));
     }
 
-    private void OnCollisionEnter(Collision other) => InCollisionEnter(other);
-
-    public virtual void InAwake()
+    protected override void ZoneInteract()
     {
-        SetMoveDirection(new Vector2(Random.Range(-0.5f, 0.5f), 1));        
-    }
-
-    public virtual void InCollisionEnter(Collision other)
-    {
-        if (other.TryGetComponentInRigidbody(out Block block))
-        {
-            block.TakeHit(damage);
-        }
-        else if (other.TryGetComponent<Zone>(out Zone zone))
-        {
-            ZoneInteract();
-        }  
-    }
-
-    public void SetMoveDirection(Vector2 direction)
-    {
-        direction = direction.normalized;
-        rb.velocity = direction * speed;
-    }
-
-    public void ZoneInteract()
-    {
+        base.ZoneInteract();
+        
         --ballAmount;
-
-        if(ballAmount == 0) EventsManager.ChangeGameState(GameState.Lose);
+        if(ballAmount == 0) EventsManager.ChangeGameState(GameState.BallLose);
     }
 }

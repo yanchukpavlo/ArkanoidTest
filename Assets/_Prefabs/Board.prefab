@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f448e56ba92955848b5cef3d6e94e7f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 30
+  speed: 40
   spawnPoint: {fileID: 6899327585336485654}
   ballPrefab: {fileID: 1254622783941428042, guid: ea4f453578a7cc943af058458d05864f,
     type: 3}

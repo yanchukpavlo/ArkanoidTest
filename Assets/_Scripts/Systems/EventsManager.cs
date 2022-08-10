@@ -3,10 +3,12 @@ using System;
 public enum GameState
 {
     Start,
-    Pause,
-    Restore,
-    Lose,
-    Win
+    Continue,
+    PauseOn,
+    PauseOff,
+    BallLose,
+    Win,
+    MainMenu,
 }
 
 public static class EventsManager

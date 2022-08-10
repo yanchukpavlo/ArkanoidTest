@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : Ball
+public class Bullet : Projectile
 {
-    public override void InAwake()
+    public void Start()
     {
         SetMoveDirection(Vector2.up);
     }
