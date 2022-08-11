@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class ScreenMenu : Screen
 {
-    [SerializeField] Button buttonStart;
-    [SerializeField] Button buttonContinue;
+    [SerializeField] Button buttonGameStart;
+    [SerializeField] Button buttonGameLoad;
     [SerializeField] Button buttonExit;
 
     protected override void InAwake()
     {
-        buttonStart.onClick.AddListener(() => EventsManager.ChangeGameState(GameState.Start));
-        buttonContinue.onClick.AddListener(() => EventsManager.ChangeGameState(GameState.Start));
+        buttonGameStart.onClick.AddListener(() => EventsManager.ChangeGameState(GameState.GameStart));
+        buttonGameLoad.onClick.AddListener(ClickLoadGame);
         buttonExit.onClick.AddListener(() => Application.Quit());
     }
 
@@ -25,7 +25,11 @@ public class ScreenMenu : Screen
     {
         switch (state)
         {
-            case GameState.Start:
+            case GameState.GameStart:
+                gameObject.SetActive(false);
+                break;
+
+            case GameState.GameLoad:
                 gameObject.SetActive(false);
                 break;
 
@@ -38,6 +42,13 @@ public class ScreenMenu : Screen
 
     void Setup()
     {
-        buttonContinue.interactable = false;
+        buttonGameLoad.interactable = SaveSystem.HasSaveFile();
+    }
+
+    void ClickLoadGame()
+    {
+        buttonGameLoad.interactable = false;
+        SaveSystem.Load();
+        EventsManager.ChangeGameState(GameState.GameLoad);
     }
 }

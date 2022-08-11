@@ -8,4 +8,15 @@ public class Bullet : Projectile
     {
         SetMoveDirection(Vector2.up);
     }
+
+    protected override void InTriggerEnter(Collider other)
+    {
+        base.InTriggerEnter(other);
+
+        if (other.TryGetComponentInRigidbody(out Block block))
+        {
+            block.TakeHit(damage);
+            Destroy(gameObject);
+        }
+    }
 }

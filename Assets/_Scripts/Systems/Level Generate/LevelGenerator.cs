@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : MonoBehaviour, ISaveable
 {
     [SerializeField] Block blockPrefab;
 
@@ -14,33 +14,95 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] float xOffset = 0;
     [SerializeField] float yOffset = 0;
     [SerializeField][Range(0.3f, 0.75f)] float bloksSpacePercent = 0.7f;
-    
+
     [Space]
     [SerializeField][Range(0f, 0.6f)] float spawnThreshold = 0.2f;
+    [SerializeField][Range(0f, 0.5f)] float specialBlockPercent = 0.1f;
 
     Transform blockParent;
 
-    private void Start() {
-        Generate();
+    private void Awake()
+    {
+        EventsManager.OnGameStateChange += GameStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        EventsManager.OnGameStateChange -= GameStateChanged;
+    }
+
+    void GameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.GameStart:
+                Generate();
+                break;
+
+            case GameState.MainMenu:
+                DestroyBlocksParent();
+                break;
+
+            case GameState.Win:
+                Generate(1f);
+                break;
+        }
     }
 
     [ContextMenu("Generate")]
     void Generate()
     {
         LevelGenerateStrategy strategy = new GenerateStrategyNoise(spawnThreshold, bloksSpacePercent, width, high, colums, rows, xOffset, yOffset);
+        SetBlocksParent();
 
-        if (blockParent)
-        {
-            if (Application.isPlaying) Destroy(blockParent.gameObject);
-            else DestroyImmediate(blockParent.gameObject);
-        }
-        blockParent = new GameObject("Block Holder").transform;
-        
         var data = strategy.GetSpawnPositions();
 
         foreach (var item in data)
         {
-            CreateBlock(item.position, strategy.Scale).Setup(BlockType.Normal, item.color);
+            BlockType blockType = BlockType.Normal;
+            if (Random.value < specialBlockPercent)
+            {
+                if(Random.value < 0.3f) blockType = BlockType.Powerup;
+                else blockType = BlockType.Shielded;
+            }
+
+            CreateBlock(item.position, strategy.Scale).Setup(blockType, item.color);
+        }
+    }
+
+    void Generate(float timer)
+    {
+        StartCoroutine(WaitCoroutine());
+
+        IEnumerator WaitCoroutine()
+        {
+            yield return new WaitForSeconds(timer);
+            Generate();
+        }
+    }    
+
+    void Generate(Block.SaveData[] blocksData)
+    {
+        SetBlocksParent();
+
+        foreach (var item in blocksData)
+        {
+            CreateBlock(item.position, item.scale).Setup(item.type, item.color);
+        }
+    }
+
+    void SetBlocksParent()
+    {
+        DestroyBlocksParent();
+        blockParent = new GameObject("Block Holder").transform;
+    }
+
+    void DestroyBlocksParent()
+    {
+        if (blockParent)
+        {
+            if (Application.isPlaying) Destroy(blockParent.gameObject);
+            else DestroyImmediate(blockParent.gameObject);
         }
     }
 
@@ -54,14 +116,32 @@ public class LevelGenerator : MonoBehaviour
 
         return block;
     }
+
+    public object CaptureState()
+    {
+        var blocks = Block.blocks;
+        Block.SaveData[] blocksData = new Block.SaveData[blocks.Count];
+        for (int i = 0; i < blocksData.Length; i++)
+        {
+            blocksData[i] = blocks[i].GetData();
+        }
+
+        return blocksData;
+    }
+
+    public void RestoreState(object state)
+    {
+        Block.SaveData[] blocksData = (Block.SaveData[])state;
+        Generate(blocksData);
+    }
 }
 
-public class GenerateData
+public class GenerateInfo
 {
     public Vector3 position;
     public Color color;
 
-    public GenerateData(Vector3 position, Color color)
+    public GenerateInfo(Vector3 position, Color color)
     {
         this.position = position;
         this.color = color;

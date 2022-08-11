@@ -31,12 +31,12 @@ public class GenerateStrategyNoise : LevelGenerateStrategy
         Scale = new Vector3(xDelta - xOffset, yDelta - yOffset, 1);
     }
 
-    public override List<GenerateData> GetSpawnPositions()
+    public override List<GenerateInfo> GetSpawnPositions()
     {
         float xDelta = width / colums;
         float yDelta = high * bloksSpacePercent / rows;
 
-        List<GenerateData> spawnData = new List<GenerateData>();
+        List<GenerateInfo> spawnData = new List<GenerateInfo>();
         Vector3 point = new Vector3(-width * 0.5f + xDelta * 0.5f, high - yDelta * 0.5f, 0);
         float[,] noise = Get2DNoise(rows, colums, new Vector2(Random.Range(0, 10000), Random.Range(0, 10000)));
 
@@ -45,7 +45,7 @@ public class GenerateStrategyNoise : LevelGenerateStrategy
             for (int j = 0; j < colums; j++)
             {
                 float noiseValue = noise[i, j];
-                if (noiseValue > spawnThreshold) spawnData.Add(new GenerateData(point, GetNoiseColor(noiseValue)));//CreateBlock(point, scale).Setup(BlockType.Normal, GetNoiseColor(noiseValue));
+                if (noiseValue > spawnThreshold) spawnData.Add(new GenerateInfo(point, GetNoiseColor(noiseValue)));//CreateBlock(point, scale).Setup(BlockType.Normal, GetNoiseColor(noiseValue));
                 point.x += xDelta;
             }
 

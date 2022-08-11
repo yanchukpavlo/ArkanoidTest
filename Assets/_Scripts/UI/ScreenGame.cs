@@ -31,11 +31,11 @@ public class ScreenGame : Screen
     {
         switch (state)
         {
-            case GameState.Start:
+            case GameState.GameStart:
                 gameObject.SetActive(true);
                 break;
 
-            case GameState.Continue:
+            case GameState.GameLoad:
                 gameObject.SetActive(true);
                 break;
 

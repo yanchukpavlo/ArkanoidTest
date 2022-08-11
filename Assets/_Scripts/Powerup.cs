@@ -14,11 +14,11 @@ public class Powerup : MonoBehaviour
     [field: SerializeField] public float speed { get; private set; } = 5f;
     [field: SerializeField] public PowerupType powerupType { get; private set; }
 
-    Rigidbody articulationBody;
+    Rigidbody rb;
 
     private void Awake()
     {
-        articulationBody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         powerupType = powerupType.RandomEnum<PowerupType>();
     }
 
@@ -41,7 +41,7 @@ public class Powerup : MonoBehaviour
 
     void Move()
     {
-        articulationBody.velocity = speed * Vector3.down;
+        rb.velocity = speed * Vector3.down;
     }
 
     public void Pickup()
@@ -52,6 +52,6 @@ public class Powerup : MonoBehaviour
 
     public void ZoneInteract()
     {
-        
+        Destroy(gameObject);
     }
 }

@@ -5,5 +5,5 @@ using UnityEngine;
 public abstract class LevelGenerateStrategy
 {
     public abstract Vector3 Scale { get; set; }
-    public abstract List<GenerateData> GetSpawnPositions();
+    public abstract List<GenerateInfo> GetSpawnPositions();
 }

@@ -2,8 +2,8 @@ using System;
 
 public enum GameState
 {
-    Start,
-    Continue,
+    GameStart,
+    GameLoad,
     PauseOn,
     PauseOff,
     BallLose,

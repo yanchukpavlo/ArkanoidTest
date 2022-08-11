@@ -31,7 +31,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other) => InTriggerEnter(other);
+
+    protected virtual void InTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<Zone>(out Zone zone))
         {
@@ -41,6 +43,6 @@ public class Projectile : MonoBehaviour
 
     protected virtual void ZoneInteract()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }

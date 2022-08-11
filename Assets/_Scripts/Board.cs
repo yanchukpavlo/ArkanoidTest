@@ -47,12 +47,20 @@ public class Board : MonoBehaviour
     {
         switch (state)
         {
-            case GameState.Start:
-                CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+            case GameState.GameStart:
+                Spawner.CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                break;
+
+            case GameState.GameLoad:
+                Spawner.CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                break;
+
+            case GameState.Win:
+                WaitAncCreateBall(1f);
                 break;
 
             case GameState.BallLose:
-                if (GameManager.HP > 0) CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                if (GameManager.HP > 0) Spawner.CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
                 break;
 
                 // case GameState.Pause:
@@ -60,6 +68,17 @@ public class Board : MonoBehaviour
 
                 // case GameState.Restore:
                 //     break;
+        }
+    }
+
+    void WaitAncCreateBall(float timer)
+    {
+        StartCoroutine(Wait());
+
+        IEnumerator Wait()
+        {
+            yield return new WaitForSeconds(timer);
+            Spawner.CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
         }
     }
 
@@ -85,7 +104,7 @@ public class Board : MonoBehaviour
                 for (int i = 0; i < 3; i++)
                 {
                     yield return new WaitForSeconds(timeBetweenShot);
-                    CreateOnTemplate<Bullet>(bulletPrefab, spawnPoint.position);
+                    Spawner.CreateOnTemplate<Bullet>(bulletPrefab, spawnPoint.position);
                 }
             }
         }
@@ -98,21 +117,10 @@ public class Board : MonoBehaviour
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    yield return new WaitForSeconds(timeBetweenShot);
-                    CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
+                    yield return new WaitForSeconds(0.5f);
+                    Spawner.CreateOnTemplate<Ball>(ballPrefab, spawnPoint.position);
                 }
             }
         }
     }
-
-    T CreateOnTemplate<T>(T prefab, Transform parent, Vector3 position) where T : MonoBehaviour
-    {
-        T p = Instantiate(prefab, parent);
-        p.transform.position = position;
-        return p;
-    }
-
-    T CreateOnTemplate<T>(T prefab, Transform parent) where T : MonoBehaviour => CreateOnTemplate<T>(prefab, parent, Vector3.zero);
-    T CreateOnTemplate<T>(T prefab, Vector3 position) where T : MonoBehaviour => CreateOnTemplate<T>(prefab, null, position);
-    T CreateOnTemplate<T>(T prefab) where T : MonoBehaviour => CreateOnTemplate<T>(prefab, null, Vector3.zero);
 }

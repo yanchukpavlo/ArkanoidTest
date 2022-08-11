@@ -12,7 +12,7 @@ public class ScreenPause : Screen
     protected override void InAwake()
     {
         buttonHome.onClick.AddListener(() => EventsManager.ChangeGameState(GameState.MainMenu));
-        buttonSave.onClick.AddListener(() => Debug.Log("Save"));
+        buttonSave.onClick.AddListener(() => SaveSystem.Save());
         buttonContinue.onClick.AddListener(() => EventsManager.ChangeGameState(GameState.PauseOff));
     }
 
@@ -25,6 +25,10 @@ public class ScreenPause : Screen
     {
         switch (state)
         {
+            case GameState.MainMenu:
+                gameObject.SetActive(false);
+                break;
+
             case GameState.PauseOn:
                 gameObject.SetActive(true);
                 break;
